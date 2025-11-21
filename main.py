@@ -82,7 +82,7 @@ def malShare_window():
         print("File hash:", hash_value)
         # Correct call
         get_malshare_info(file_hash=hash_value, save_path="malshare_result.json")
-    #MalShare button
+    #Button
     tk.Button(new_window, 
               text="Select a File", 
               command=openFile,
@@ -91,8 +91,151 @@ def malShare_window():
               fg="black", 
               activebackground='#FF0000', 
               activeforeground='white',
-              width=20).pack()
-    main.withdrawl()  #closes main window
+              width=20).pack(pady=20)
+    main.withdraw()  #closes main window
+
+#URLScan Window Function
+def urlScan_window():
+    new_window = tk.Toplevel(main)
+    new_window.title("URLScan")
+    new_window.geometry("600x600")
+    new_window.config(background="#4A4459")
+    #Text in the Window
+    tk.Label(new_window,
+             text="Paste a url:", 
+             font=('Courier New',12), 
+             fg="white", 
+             bg="#4A4459", 
+             padx=10,
+             pady=10).pack()
+    #Text box for url
+    entry = Entry(new_window, font=('Courier New', 12))
+    entry.pack(pady=20)
+    #Submit Button
+    def on_submit():
+        return
+    submit_button = Button(new_window, 
+                           text="Submit", 
+                           command=on_submit,
+                           font=('Courier New', 12), 
+                           bg="#00C3EB", 
+                           fg="black", 
+                           activebackground='#FF0000', 
+                           activeforeground='white',
+                           width=20)
+    submit_button.pack()
+    main.withdraw()  #closes main window
+
+#WebOfTrust Function
+def webOfTrust_window():
+    new_window = tk.Toplevel(main)
+    new_window.title("Web of Trust")
+    new_window.geometry("600x600")
+    new_window.config(background="#4A4459")
+    #Text in the Window
+    tk.Label(new_window,
+             text="URL or IP address", 
+             font=('Courier New',12), 
+             fg="white", 
+             bg="#4A4459", 
+             padx=10,
+             pady=10).pack()
+    #Text box for url
+    entry = Entry(new_window, font=('Courier New', 12))
+    entry.pack(pady=20)
+    #Submit Button
+    def on_submit():
+        return
+    submit_button = Button(new_window, 
+                           text="Submit", 
+                           command=on_submit,
+                           font=('Courier New', 12), 
+                           bg="#00C3EB", 
+                           fg="black", 
+                           activebackground='#FF0000', 
+                           activeforeground='white',
+                           width=20)
+    submit_button.pack()
+    main.withdraw()  #closes main window
+
+#VeriPhone Function
+def veriPhone():
+    new_window = tk.Toplevel(main)
+    new_window.title("VeriPhone")
+    new_window.geometry("600x600")
+    new_window.config(background="#4A4459")
+    #Text
+    phone_label = tk.Label(new_window, 
+                           text="Phone Number:",
+                           font=('Courier New',12), 
+                           fg="white", 
+                           bg="#4A4459", 
+                           padx=10,
+                           pady=10).pack()
+    #Text box
+    phone_entry = Entry(new_window, font=('Courier New', 12))
+    phone_entry.pack(pady=20)
+    #Submit Button
+    def on_submit():
+        return
+    submit_button = Button(new_window, 
+                           text="Submit", 
+                           command=on_submit,
+                           font=('Courier New', 12), 
+                           bg="#00C3EB", 
+                           fg="black", 
+                           activebackground='#FF0000', 
+                           activeforeground='white',
+                           width=20)
+    submit_button.pack()
+    main.withdraw()  #closes main window
+
+#Function for virus total 
+def virusTotal_window():
+    new_window = tk.Toplevel(main)
+    new_window.title("Virus Total")
+    new_window.geometry("600x600")
+    new_window.config(background="#4A4459")
+    #Text in the Window
+    tk.Label(new_window,
+             text="URL or Files", 
+             font=('Courier New',12), 
+             fg="white", 
+             bg="#4A4459", 
+             padx=10,
+             pady=10).pack()
+    #File open
+    def openFile():
+        filepath = filedialog.askopenfilename()
+        print(filepath)
+    button = tk.Button(new_window,
+                    text="Open", 
+                    command=openFile,
+                    font=('Courier New', 12), 
+                    bg="#00C3EB", 
+                    fg="black", 
+                    activebackground='#FF0000', 
+                    activeforeground='white',
+                    width=20)
+    button.pack(pady=40)
+    #Text box for url
+    entry = Entry(new_window, font=('Courier New', 12))
+    entry.pack(pady=10)
+    #Submit Button
+    def on_submit():
+        return
+    submit_button = Button(new_window, 
+                           text="Submit", 
+                           command=on_submit,
+                           font=('Courier New', 12), 
+                           bg="#00C3EB", 
+                           fg="black", 
+                           activebackground='#FF0000', 
+                           activeforeground='white',
+                           width=20)
+    submit_button.pack(pady=20)
+
+    main.withdraw()  #closes main window
 
 #Main window buttons
 malShare = Button(main, 
@@ -103,56 +246,47 @@ malShare = Button(main,
                   fg="black", 
                   activebackground='#FF0000', 
                   activeforeground='white',
-                  width=20).pack()
+                  width=20).pack(pady=5)
 
-#Move this function at the top
-#URLScan Window Function
-def urlScan_window():
-    new_window = tk.Toplevel(main)
-    new_window.title("URLScan")
-    new_window.geometry("400x400")
-    new_window.config(background="#4A4459")
-    main.withdrawl()  #closes main window
+urlScan = Button(main,text='URLScan',
+                 command=urlScan_window,
+                 font=('Courier New', 12),  
+                 bg="#00C3EB", 
+                 fg="black", 
+                 activebackground='#FF0000', 
+                 activeforeground='white',
+                 width=20).pack(pady=20)
 
-urlScan = Button(main,text='URLScan')
-urlScan.config(command=lambda:create_window(urlScan),
-              font=('Courier New', 12),  
-              bg="#00C3EB", 
-              fg="black", 
-              activebackground='#FF0000', 
-              activeforeground='white',
-              width=20)
-urlScan.pack(pady=20)
+webOfTrust = Button(main,
+                    text='WebofTrust',
+                    command=webOfTrust_window,
+                    font=('Courier New', 12), 
+                    bg="#00C3EB", 
+                    fg="black", 
+                    activebackground='#FF0000', 
+                    activeforeground='white',
+                    width=20)
+webOfTrust.pack(pady=0)
 
-webOfTrust = Button(main,text='WebofTrust')
-webOfTrust.config(command=lambda:create_window(webOfTrust),
-              font=('Courier New', 12), 
-              bg="#00C3EB", 
-              fg="black", 
-              activebackground='#FF0000', 
-              activeforeground='white',
-              width=20)
-webOfTrust.pack(pady=20)
+veriPhone = Button(main,
+                   text='Veriphone',
+                   command=veriPhone,
+                   font=('Courier New', 12), 
+                   bg="#00C3EB", 
+                   fg="black", 
+                   activebackground='#FF0000', 
+                   activeforeground='white',
+                   width=20).pack(pady=20)
 
-veriPhone = Button(main,text='Veriphone')
-veriPhone.config(command=lambda:create_window(veriPhone),
-              font=('Courier New', 12), 
-              bg="#00C3EB", 
-              fg="black", 
-              activebackground='#FF0000', 
-              activeforeground='white',
-              width=20)
-veriPhone.pack(pady=20)
-
-virusTotal = Button(main,text='VirusTotal')
-virusTotal.config(command=lambda:create_window(virusTotal),
-              font=('Courier New', 12), 
-              bg="#00C3EB", 
-              fg="black", 
-              activebackground='#FF0000', 
-              activeforeground='white',
-              width=20)
-virusTotal.pack(pady=20)
+virusTotal = Button(main,
+                    text='VirusTotal',
+                    command=virusTotal_window,
+                    font=('Courier New', 12), 
+                    bg="#00C3EB", 
+                    fg="black", 
+                    activebackground='#FF0000', 
+                    activeforeground='white',
+                    width=20).pack(pady=10)
 
 End = Button(main,text='Exit')
 End.config(command=main.quit,
