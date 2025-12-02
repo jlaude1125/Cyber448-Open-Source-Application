@@ -1,12 +1,10 @@
-import requests
-import os
-import json
 
 def get_file_scan():
     # Prompt user for file path to scan
     url = 'https://www.virustotal.com/vtapi/v2/file/scan'
     params = {'apikey': '9cf48fa4d97ddba0b7843b56261da3493bdb515f7d94b03d04a1fd04d00b2c8f'}
-    file_path = input('Enter the path to the file to be scanned: ')
+    #file_path = input('Enter the path to the file to be scanned: ')
+    scan_result = None 
     
 
     # If successful, the scan results are printed; if there is an error, it is printed

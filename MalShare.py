@@ -22,78 +22,75 @@ def _make_session(retries: int = 2, backoff_factor: float = 0.5) -> requests.Ses
 
 
 def get_malshare_info(api_key: Optional[str] = None, file_hash: Optional[str] = None, save_path: str = "data.json"):
-	"""
-	Query MalShare for a given file hash and save the raw response to `save_path`.
+    key = api_key or MALSHARE_API_KEY
+    if not key or "YOUR_MALSHARE_API_KEY_HERE" in key:
+        return "[Error] MALSHARE_API_KEY is not set."
 
-	- `api_key`: optional override; if not provided uses env var or constant.
-	- `file_hash`: optional override; if not provided the user is prompted.
-	"""
+    if not file_hash:
+        return "No hash provided."
 
-	key = api_key or MALSHARE_API_KEY
-	if not key or "YOUR_MALSHARE_API_KEY_HERE" in key:
-		print("[Error] MALSHARE_API_KEY is not set. Set MALSHARE_API_KEY environment variable or pass api_key.")
-		return
+    params = {"api_key": key, "action": "getinfo", "hash": file_hash}
 
-	if not file_hash:
-		file_hash = input("Enter the file hash to check (MD5 / SHA1 / SHA256): ").strip()
+    session = _make_session()
 
-	if not file_hash:
-		print("No hash entered, aborting.")
-		return
+    try:
+        resp = session.get(BASE_URL, params=params, timeout=REQUEST_TIMEOUT)
+        resp.raise_for_status()
+        text = resp.text.strip()
 
-	params = {"api_key": key, "action": "getinfo", "hash": file_hash}
+        if not text:
+            _save_result(save_path, file_hash, "[Empty response]")
+            return "[Error] MalShare returned an empty response."
+                
 
-	print(f"\nQuerying MalShare for hash: {file_hash}")
-	session = _make_session()
+        if text.lower().startswith("error"):
+            _save_result(save_path, file_hash, text)
+            return text
 
-	try:
-		resp = session.get(BASE_URL, params=params, timeout=REQUEST_TIMEOUT)
-		resp.raise_for_status()
-		text = resp.text.strip()
+        parsed = None
+        try:
+            parsed = json.loads(text)
+        except Exception:
+            parsed = None
 
-		if not text:
-			print("[Error] MalShare returned an empty response.")
-			return
+        _save_result(save_path, file_hash, text, parsed)
 
-		if text.lower().startswith("error"):
-			print(f"[Error] MalShare response: {text}")
-			# still save the raw response so caller can inspect
-			_save_result(save_path, file_hash, text)
-			return
+        if parsed is not None:
+            return json.dumps(parsed, indent=4)
 
-		# Try to parse the response as JSON (MalShare returns JSON-like text in many cases)
-		parsed = None
-		try:
-			parsed = json.loads(text)
-		except Exception:
-			parsed = None
+        return text
 
-		print("\n=== MalShare Result ===")
-		if parsed is not None:
-			# pretty-print parsed JSON
-			print(json.dumps(parsed, indent=4))
-		else:
-			print(text)
+    except requests.exceptions.RequestException as e:
+        return f"[Error] MalShare request failed: {e}"
 
-		_save_result(save_path, file_hash, text, parsed)
-		print(f"\nResult saved to {save_path}")
-
-	except requests.exceptions.RequestException as e:
-		print(f"[Error] MalShare request failed: {e}")
+		
+    
 
 
 def _save_result(path: str, file_hash: str, raw_text: str, parsed: Optional[dict] = None):
-	payload = {"hash": file_hash, "raw": raw_text}
-	if parsed is not None:
-		payload["parsed"] = parsed
+    payload = {"hash": file_hash, "raw": raw_text}
+    if parsed is not None:
+        payload["parsed"] = parsed
 
-	try:
-		with open(path, "w", encoding="utf-8") as f:
-			json.dump(payload, f, indent=4)
-	except TypeError:
-		# Fallback if some value is not serializable
-		with open(path, "w", encoding="utf-8") as f:
-			json.dump({"hash": file_hash, "raw": str(raw_text)}, f, indent=4)
+    # Load previous results (if file exists)
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if not isinstance(data, list):
+                    data = [data]
+        except Exception:
+            data = []
+    else:
+        data = []
+
+    # Append new entry
+    data.append(payload)
+
+    # Save updated list
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
 
 
 def _cli():
